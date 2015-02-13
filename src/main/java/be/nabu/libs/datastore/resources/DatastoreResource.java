@@ -1,5 +1,6 @@
 package be.nabu.libs.datastore.resources;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URI;
 
@@ -39,7 +40,7 @@ public class DatastoreResource implements ReadableResource {
 
 	@Override
 	public ReadableContainer<ByteBuffer> getReadable() throws IOException {
-		return IOUtils.wrap(datastore.retrieve(uri));
+		return IOUtils.wrap(new BufferedInputStream(datastore.retrieve(uri)));
 	}
 	
 	private DataProperties getProperties() {
