@@ -84,7 +84,7 @@ public class ResourceDatastore<T> implements ContextualStreamableDatastore<T> {
 		return uri;
 	}
 	
-	private Resource getResource(URI uri) throws IOException {
+	public Resource getResource(URI uri) throws IOException {
 		Resource resource = getResourceFactory().resolve(uri, principal);
 		if (resource == null) {
 			throw new IOException("Could not find the resource at " + uri);
