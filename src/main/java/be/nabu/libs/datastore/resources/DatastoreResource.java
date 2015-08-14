@@ -6,13 +6,14 @@ import java.net.URI;
 
 import be.nabu.libs.datastore.api.DataProperties;
 import be.nabu.libs.datastore.api.Datastore;
+import be.nabu.libs.resources.api.LocatableResource;
 import be.nabu.libs.resources.api.ReadableResource;
 import be.nabu.libs.resources.api.ResourceContainer;
 import be.nabu.utils.io.IOUtils;
 import be.nabu.utils.io.api.ByteBuffer;
 import be.nabu.utils.io.api.ReadableContainer;
 
-public class DatastoreResource implements ReadableResource {
+public class DatastoreResource implements ReadableResource, LocatableResource {
 
 	private Datastore datastore;
 	private URI uri;
@@ -53,5 +54,10 @@ public class DatastoreResource implements ReadableResource {
 			}
 		}
 		return properties;
+	}
+
+	@Override
+	public URI getURI() {
+		return uri;
 	}
 }

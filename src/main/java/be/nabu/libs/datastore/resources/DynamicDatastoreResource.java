@@ -14,6 +14,12 @@ import be.nabu.utils.io.api.ByteBuffer;
 import be.nabu.utils.io.api.ReadableContainer;
 import be.nabu.utils.io.containers.ReadableContainerDuplicator;
 
+/**
+ * Optionally add the capability of "chaining" the original resource
+ * So on first read > original (+ copy to datastore)
+ * On second read > flush (!) the datastore output, retrieve datastore as input and chain the original (+ further copy to datastore)
+ * 		> the chain should switch to the original only after the datastore is done reading so any new data should not be read twice
+ */
 public class DynamicDatastoreResource<T> implements ReadableResource, LocatableResource, Closeable {
 
 	private String name;
