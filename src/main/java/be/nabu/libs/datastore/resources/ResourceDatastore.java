@@ -201,4 +201,9 @@ public class ResourceDatastore<T> implements ContextualStreamableDatastore<T> {
 	public DynamicResourceProvider getDynamicResourceProvider() {
 		return new DynamicDatabaseResourceProvider<T>(this);
 	}
+
+	@Override
+	public DatastoreOutputStream stream(String name, String contentType) throws IOException {
+		return stream(null, name, contentType);
+	}
 }
