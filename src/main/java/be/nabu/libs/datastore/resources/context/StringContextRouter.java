@@ -78,4 +78,16 @@ public class StringContextRouter implements DataRouter<String> {
 		return formatter.get();
 	}
 
+	public DatastoreConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(DatastoreConfiguration configuration) {
+		// need to reset the containers if the configuration has changed
+		synchronized (containers) {
+			this.configuration = configuration;
+			containers.clear();
+		}
+	}
+
 }
