@@ -1,10 +1,10 @@
 package be.nabu.libs.datastore.resources;
 
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.security.Principal;
 import java.util.Date;
 import java.util.UUID;
@@ -29,8 +29,14 @@ import be.nabu.libs.resources.api.ReadableResource;
 import be.nabu.libs.resources.api.Resource;
 import be.nabu.libs.resources.api.TimestampedResource;
 import be.nabu.libs.resources.api.WritableResource;
+import be.nabu.utils.codec.TranscoderUtils;
+import be.nabu.utils.codec.api.Transcoder;
+import be.nabu.utils.codec.impl.QuotedPrintableDecoder;
+import be.nabu.utils.codec.impl.QuotedPrintableEncoder;
+import be.nabu.utils.codec.impl.QuotedPrintableEncoding;
 import be.nabu.utils.io.ContentTypeMap;
 import be.nabu.utils.io.IOUtils;
+import be.nabu.utils.io.api.ByteBuffer;
 
 public class ResourceDatastore<T> implements ContextualStreamableDatastore<T> {
 
@@ -125,18 +131,31 @@ public class ResourceDatastore<T> implements ContextualStreamableDatastore<T> {
 	 * However the user must be able to store multiple resources with the same name which may end up in the same folder
 	 */
 	private static String generateUniqueName(String name, String contentType) {
-		return name.replace('/', '_') + "." + UUID.randomUUID().toString() + "." + ContentTypeMap.getInstance().getExtensionFor(contentType);
+		return transcode(name, new QuotedPrintableEncoder(QuotedPrintableEncoding.ALL)) + "." + UUID.randomUUID().toString() + "." + ContentTypeMap.getInstance().getExtensionFor(contentType);
+	}
+
+	private static String transcode(String name, Transcoder<ByteBuffer> transcoder) {
+		try {
+			byte[] bytes = IOUtils.toBytes(TranscoderUtils.transcodeBytes(IOUtils.wrap(name.getBytes(Charset.forName("UTF-8")), true), transcoder));
+			return new String(bytes, "UTF-8");
+		}
+		catch (IOException e) {
+			throw new RuntimeException("Could not encode name: " + name, e);
+		}
 	}
 	
 	/**
 	 * This strips the uniquely generated part from the name
 	 */
 	private static String getActualName(String uniqueName) {
-		return uniqueName.replaceAll("\\.[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\.[a-z0-9.]+$", "");
+		return transcode(uniqueName.replaceAll("\\.[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\.[a-z0-9.]+$", ""), new QuotedPrintableDecoder(QuotedPrintableEncoding.WORD));
 	}
 	
 	@Override
 	public URI store(T context, InputStream input, String name, String contentType) throws IOException {
+		if (input == null) {
+			throw new NullPointerException("No input given");
+		}
 		DatastoreOutputStream stream = stream(context, name, contentType);
 		try {
 			IOUtils.copyBytes(IOUtils.wrap(input), IOUtils.wrap(stream));
@@ -189,6 +208,12 @@ public class ResourceDatastore<T> implements ContextualStreamableDatastore<T> {
 		ManageableContainer<?> target = dataRouter.route(context, getResourceFactory(), principal);
 		if (target == null) {
 			throw new IOException("Can not store the resource with the given context parameters");
+		}
+		if (name == null) {
+			name = "unnamed";
+		}
+		if (contentType == null) {
+			contentType = "application/octet-stream";
 		}
 		Resource resource = target.create(generateUniqueName(name, contentType), contentType);
 		if (!(resource instanceof WritableResource)) {

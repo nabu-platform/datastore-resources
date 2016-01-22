@@ -11,6 +11,10 @@ public class ResourceProperties implements DataProperties {
 	private long size;
 	private Date date;
 	
+	public ResourceProperties() {
+		// autoconstruct
+	}
+	
 	public ResourceProperties(String name, String contentType, long size, Date date) {
 		this.name = name;
 		this.contentType = contentType;
@@ -42,5 +46,18 @@ public class ResourceProperties implements DataProperties {
 	public Date getLastModified() {
 		return date;
 	}
-	
+
+	public void setLastModified(Date date) {
+		this.date = date;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+	public void setSize(long size) {
+		this.size = size;
+	}
+
 }
