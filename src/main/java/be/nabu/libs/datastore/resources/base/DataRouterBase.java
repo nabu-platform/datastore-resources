@@ -45,7 +45,7 @@ public class DataRouterBase implements DataRouter<Object> {
 		return Object.class;
 	}
 
-	protected SimpleDateFormat getFormatter() {
+	public static SimpleDateFormat getFormatter() {
 		if (formatter.get() == null) {
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 			formatter.set(simpleDateFormat);
