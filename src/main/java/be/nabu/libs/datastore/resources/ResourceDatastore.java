@@ -14,6 +14,7 @@ import javax.xml.bind.JAXBException;
 import be.nabu.libs.datastore.DatastoreOutputStream;
 import be.nabu.libs.datastore.api.ContextualStreamableDatastore;
 import be.nabu.libs.datastore.api.DataProperties;
+import be.nabu.libs.datastore.api.DeletableDatastore;
 import be.nabu.libs.datastore.api.URNManager;
 import be.nabu.libs.datastore.resources.base.DataRouterBase;
 import be.nabu.libs.datastore.resources.context.DatastoreConfiguration;
@@ -38,7 +39,7 @@ import be.nabu.utils.io.ContentTypeMap;
 import be.nabu.utils.io.IOUtils;
 import be.nabu.utils.io.api.ByteBuffer;
 
-public class ResourceDatastore<T> implements ContextualStreamableDatastore<T> {
+public class ResourceDatastore<T> implements ContextualStreamableDatastore<T>, DeletableDatastore {
 
 	private URNManager urnManager;
 	private DataRouter<T> dataRouter;
@@ -230,5 +231,19 @@ public class ResourceDatastore<T> implements ContextualStreamableDatastore<T> {
 	@Override
 	public DatastoreOutputStream stream(String name, String contentType) throws IOException {
 		return stream(null, name, contentType);
+	}
+
+	@Override
+	public void delete(URI uri) throws IOException {
+		uri = resolve(uri);
+		Resource resource = getResource(uri);
+		if (resource != null) {
+			if (resource.getParent() instanceof ManageableContainer) {
+				((ManageableContainer<?>) resource.getParent()).delete(resource.getName());
+			}
+			else {
+				throw new IOException("The parent artifact of " + uri + " is not manageable");
+			}
+		}
 	}
 }
