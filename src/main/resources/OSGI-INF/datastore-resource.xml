@@ -1,7 +1,0 @@
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="be.nabu.libs.datastore.resources.ResourceDatastore">
-	<implementation class="be.nabu.libs.datastore.resources.ResourceDatastore" />
-	<service>
-		<provide interface="be.nabu.libs.datastore.api.Datastore" />
-	</service>
-	<property name="service.ranking" type="Integer" value="1"/>
-</scr:component>
