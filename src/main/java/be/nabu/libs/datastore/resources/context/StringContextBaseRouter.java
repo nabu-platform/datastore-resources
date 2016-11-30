@@ -33,7 +33,16 @@ public class StringContextBaseRouter implements DataRouter<String> {
 		URI target = context == null ? base : URIUtils.getChild(base, context.replace('.', '/'));
 		ManageableContainer<?> root = (ManageableContainer<?>) factory.resolve(target, principal);
 		if (root == null) {
-			root = (ManageableContainer<?>) ResourceUtils.mkdir(target, principal);
+			try {
+				root = (ManageableContainer<?>) ResourceUtils.mkdir(target, principal);
+			}
+			catch (IOException e) {
+				// try to resolve again, someone may have created it in the mean time
+				root = (ManageableContainer<?>) factory.resolve(target, principal);
+				if (root == null) {
+					throw e;
+				}
+			}
 		}
 		if (root == null) {
 			throw new FileNotFoundException("Can not locate nor create the root of the datastore context: " + target);
