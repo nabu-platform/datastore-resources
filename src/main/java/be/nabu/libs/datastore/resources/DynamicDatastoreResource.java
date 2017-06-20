@@ -59,7 +59,7 @@ public class DynamicDatastoreResource<T> implements ReadableResource, LocatableR
 	}
 
 	@Override
-	public URI getURI() {
+	public URI getUri() {
 		return uri;
 	}
 

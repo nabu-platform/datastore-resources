@@ -57,7 +57,7 @@ public class DatastoreResource implements ReadableResource, LocatableResource {
 	}
 
 	@Override
-	public URI getURI() {
+	public URI getUri() {
 		return uri;
 	}
 }
