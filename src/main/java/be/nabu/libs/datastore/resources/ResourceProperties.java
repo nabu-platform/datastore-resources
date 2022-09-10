@@ -8,14 +8,14 @@ public class ResourceProperties implements DataProperties {
 
 	private String name;
 	private String contentType;
-	private long size;
+	private Long size;
 	private Date date;
 	
 	public ResourceProperties() {
 		// autoconstruct
 	}
 	
-	public ResourceProperties(String name, String contentType, long size, Date date) {
+	public ResourceProperties(String name, String contentType, Long size, Date date) {
 		this.name = name;
 		this.contentType = contentType;
 		this.size = size;
@@ -23,7 +23,7 @@ public class ResourceProperties implements DataProperties {
 	}
 	
 	@Override
-	public long getSize() {
+	public Long getSize() {
 		return size;
 	}
 
@@ -56,7 +56,7 @@ public class ResourceProperties implements DataProperties {
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
-	public void setSize(long size) {
+	public void setSize(Long size) {
 		this.size = size;
 	}
 

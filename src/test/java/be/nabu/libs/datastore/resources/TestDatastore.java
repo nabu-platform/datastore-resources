@@ -36,7 +36,7 @@ public class TestDatastore extends TestCase {
 		DataProperties properties = datastore.getProperties(resource);
 		assertEquals("test.txt", properties.getName());
 		assertEquals("text/plain", properties.getContentType());
-		assertEquals(4, properties.getSize());
+		assertEquals(Long.valueOf(4), properties.getSize());
 	}
 	
 	public void testWithConfig() throws URISyntaxException, JAXBException, IOException {

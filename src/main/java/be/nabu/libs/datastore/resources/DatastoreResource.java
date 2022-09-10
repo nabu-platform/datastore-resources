@@ -60,4 +60,5 @@ public class DatastoreResource implements ReadableResource, LocatableResource {
 	public URI getUri() {
 		return uri;
 	}
+
 }
